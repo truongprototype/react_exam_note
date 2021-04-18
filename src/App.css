@@ -32,13 +32,21 @@
 }
 
 .item {
-  width: 90%;
   background: bisque;
   border-radius: 4px;
   margin: 12px 0;
   display: flex;
   justify-content: space-between;
   padding: 10px;
+}
+
+.userPanel {
+  display: flex;
+}
+
+.userInput {
+  width: 100%;
+  margin-right: 4px;
 }
 
 @keyframes App-logo-spin {

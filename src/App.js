@@ -3,7 +3,8 @@ import {useRef, useState} from "react";
 import Item from "./Item";
 
 function App() {
-    const [listOfNotes, setListOfNotes] = useState([]);
+    const sampleData = [{id: -1, text: 'Note 1'}, {id: -2, text: 'Note 2'}, {id: -3, text: 'Note 3'}];
+    const [listOfNotes, setListOfNotes] = useState(sampleData);
     const inputValue = useRef();
     const increasedId = useRef(0);
 
@@ -17,6 +18,8 @@ function App() {
             }
         ]);
         increasedId.current++;
+        inputValue.current.value = '';
+        inputValue.current.focus();
     }
 
     const deleteNote = (id) => {
@@ -24,6 +27,12 @@ function App() {
             return item.id !== id;
         });
         setListOfNotes(newList);
+    }
+
+    const inputKeyUp = (event) => {
+        if (event.keyCode === 13) {
+            addNewNote();
+        }
     }
 
     const renderList = listOfNotes.map((item) => {
@@ -38,7 +47,7 @@ function App() {
     return (
         <div className="App">
             <div className={'userPanel'}>
-                <input type={'text'} ref={inputValue}/>
+                <input className={'userInput'} type={'text'} ref={inputValue} onKeyUp={inputKeyUp}/>
                 <button onClick={addNewNote}>Add</button>
             </div>
             {renderList}
