@@ -29,6 +29,16 @@ function App() {
         setListOfNotes(newList);
     }
 
+    const saveNoteEdit = (id, newText) => {
+        const newList = listOfNotes.map(item => {
+            if (item.id === id) {
+                item.text = newText;
+            }
+            return item;
+        });
+        setListOfNotes(newList);
+    }
+
     const inputKeyUp = (event) => {
         if (event.keyCode === 13) {
             addNewNote();
@@ -41,6 +51,7 @@ function App() {
             id={item.id}
             text={item.text}
             delete={() => deleteNote(item.id)}
+            save={saveNoteEdit}
         />
     });
 
