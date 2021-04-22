@@ -1,12 +1,16 @@
 import './App.css';
-import {useRef, useState} from "react";
-import Item from "./Item";
+import {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import Item from "./components/Item";
+import Recycle from "./components/Recycle";
 
 function App() {
     const sampleData = [{id: -1, text: 'Note 1'}, {id: -2, text: 'Note 2'}, {id: -3, text: 'Note 3'}];
     const [listOfNotes, setListOfNotes] = useState(sampleData);
     const inputValue = useRef();
     const increasedId = useRef(0);
+    const [countItem, setCountItem] = useState(0);
+    const [isCountEdit, setIsCountEdit] = useState(false);
+    const [isShowList, setIsShowList] = useState(true);
 
     const addNewNote = () => {
         const inputText = inputValue.current.value;
@@ -27,6 +31,7 @@ function App() {
             return item.id !== id;
         });
         setListOfNotes(newList);
+        setCountItem(countItem + 1);
     }
 
     const saveNoteEdit = (id, newText) => {
@@ -37,6 +42,9 @@ function App() {
             return item;
         });
         setListOfNotes(newList);
+        if (isCountEdit) {
+            setCountItem(countItem + 1);
+        }
     }
 
     const inputKeyUp = (event) => {
@@ -44,6 +52,10 @@ function App() {
             addNewNote();
         }
     }
+
+    const changeCheckbox = useCallback(() => {
+        setIsCountEdit(!isCountEdit);
+    }, [isCountEdit]);
 
     const renderList = listOfNotes.map((item) => {
         return <Item
@@ -55,13 +67,25 @@ function App() {
         />
     });
 
+    const recycle = useMemo(() => <Recycle
+        isCountEdit={isCountEdit}
+        count={countItem}
+        changeCheckbox={changeCheckbox}
+    />, [isCountEdit, countItem, changeCheckbox]);
+
     return (
         <div className="App">
+            {recycle}
             <div className={'userPanel'}>
                 <input className={'userInput'} type={'text'} ref={inputValue} onKeyUp={inputKeyUp}/>
                 <button onClick={addNewNote}>Add</button>
             </div>
-            {renderList}
+            <button onClick={() => setIsShowList(!isShowList)} >Toggle list</button>
+            {isShowList
+                ? <>{renderList}</>
+                : null
+            }
+
         </div>
     );
 }
